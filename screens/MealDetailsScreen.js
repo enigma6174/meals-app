@@ -1,33 +1,37 @@
-import { useEffect, useLayoutEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Button,
-} from "react-native";
+import { useContext, useLayoutEffect } from "react";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import uuid from "react-native-uuid";
 
 import MealFooter from "../components/MealFooter";
 import { MEALS } from "../data/dummy-data";
 import StepItem from "../components/StepItem";
 import IconButton from "../components/IconButton";
+import { FavoritesContext } from "../store/context/favorites-context";
 
 export default function MealDetailsScreen({ route, navigation }) {
   uuid.v4();
 
+  const context = useContext(FavoritesContext);
+
   const mealId = route.params.mealId;
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
 
+  const isMealFavorite = context.ids.includes(mealId);
+
   function headerButtonHandler() {
-    console.log("settings_icon");
+    if (isMealFavorite) context.removeFavorite(mealId);
+    else context.addFavorite(mealId);
   }
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <IconButton onPress={headerButtonHandler} />;
+        return (
+          <IconButton
+            icon={isMealFavorite ? "star" : "star-outline"}
+            onPress={headerButtonHandler}
+          />
+        );
       },
     });
   }, [navigation, headerButtonHandler]);

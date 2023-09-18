@@ -7,7 +7,11 @@ export default function IconButton(props) {
       onPress={props.onPress}
       style={({ pressed }) => pressed && styles.pressed}
     >
-      <Ionicons name={"star"} size={24} color={"white"} />
+      <Ionicons
+        name={props.icon || "star-outline"}
+        size={props.size || 24}
+        color={props.color || "white"}
+      />
     </Pressable>
   );
 }
