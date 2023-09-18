@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { FavoritesContext } from "../store/context/favorites-context";
+
 import { MEALS } from "../data/dummy-data";
+import MealCards from "../components/MealCards";
 
 function renderFavorite(meal) {
   return (
@@ -12,10 +13,10 @@ function renderFavorite(meal) {
 }
 
 export default function FavoritesScreen() {
-  const context = useContext(FavoritesContext);
+  const favoriteMealIds = useSelector((state) => state.favorites.ids);
 
   const savedMeals = MEALS.filter((item) => {
-    return context.ids.indexOf(item.id) >= 0;
+    return favoriteMealIds.indexOf(item.id) >= 0;
   });
 
   return (
@@ -25,7 +26,7 @@ export default function FavoritesScreen() {
           <Text style={styles.warning}>No Favorite Meals Added!</Text>
         </View>
       ) : (
-        <FlatList data={savedMeals} renderItem={renderFavorite} />
+        <MealCards data={savedMeals} />
       )}
     </View>
   );

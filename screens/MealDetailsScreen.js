@@ -1,26 +1,28 @@
-import { useContext, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import uuid from "react-native-uuid";
+import { useDispatch, useSelector } from "react-redux";
 
 import MealFooter from "../components/MealFooter";
 import { MEALS } from "../data/dummy-data";
 import StepItem from "../components/StepItem";
 import IconButton from "../components/IconButton";
-import { FavoritesContext } from "../store/context/favorites-context";
+import { addFavorite, removeFavorite } from "../store/redux/favorites";
 
 export default function MealDetailsScreen({ route, navigation }) {
   uuid.v4();
 
-  const context = useContext(FavoritesContext);
+  const favoriteMealIds = useSelector((state) => state.favorites.ids);
+  const dispatch = useDispatch();
 
   const mealId = route.params.mealId;
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
 
-  const isMealFavorite = context.ids.includes(mealId);
+  const isMealFavorite = favoriteMealIds.includes(mealId);
 
   function headerButtonHandler() {
-    if (isMealFavorite) context.removeFavorite(mealId);
-    else context.addFavorite(mealId);
+    if (isMealFavorite) dispatch(removeFavorite({ id: mealId }));
+    else dispatch(addFavorite({ id: mealId }));
   }
 
   useLayoutEffect(() => {
